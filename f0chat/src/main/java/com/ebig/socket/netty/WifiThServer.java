@@ -34,7 +34,7 @@ public class WifiThServer implements SocketMonitorCall {
     private static Channel serverChannel;
     private static int mPort = 0;
     private static ServerBootstrap bootstrap;
-    private static OkChatServerListenner okChatServerListenner;
+    private static WifiThListenner wifiThListenner;
     private static Context mContext;
     public static WifiThServer getInstance() {
         if (mContext==null){
@@ -56,8 +56,8 @@ public class WifiThServer implements SocketMonitorCall {
         return WifiThServer.this;
     }
 
-    public WifiThServer addListenner(OkChatServerListenner l) {
-        this.okChatServerListenner = l;
+    public WifiThServer addListenner(WifiThListenner l) {
+        this.wifiThListenner = l;
         return WifiThServer.this;
     }
 
@@ -105,7 +105,13 @@ public class WifiThServer implements SocketMonitorCall {
             public void operationComplete(ChannelFuture channelFuture) throws Exception {
                 if (channelFuture.isSuccess()) {
                     OkChatLog.print("服务器启动成功");
+                    if (wifiThListenner!=null){
+                        wifiThListenner.onStartResult(true);
+                    }
                 } else {
+                    if (wifiThListenner!=null){
+                        wifiThListenner.onStartResult(false);
+                    }
                     OkChatLog.print("服务器启动失败");
                     if (reboot == null) {
                         reboot = new Timer();
@@ -134,16 +140,16 @@ public class WifiThServer implements SocketMonitorCall {
     @Override
     public void deviceConnect(String uuid, String ipHost) {
         //  mInBoundMessageCall.deviceConnect(uuid, ipHost);
-        if (okChatServerListenner!=null){
-            okChatServerListenner.onConnectSuccess(ipHost);
+        if (wifiThListenner !=null){
+            wifiThListenner.onConnectSuccess(ipHost);
         }
     }
 
     @Override
     public void deviceDisConnect(String uuid, String ipHost) {
         //  mInBoundMessageCall.deviceDisConnect(uuid, ipHost);
-        if (okChatServerListenner!=null){
-            okChatServerListenner.onDisConnect(ipHost);
+        if (wifiThListenner !=null){
+            wifiThListenner.onDisConnect(ipHost);
         }
     }
 
@@ -166,8 +172,8 @@ public class WifiThServer implements SocketMonitorCall {
                 double humidityInt = (hex2int(fianlH) * 125.0) / 65536.0 - 6;
                 OkChatLog.print("Listenner4NewTh 温度:"+temperatureInt+" ,湿度："+humidityInt);
                 //  }
-                if (okChatServerListenner!=null){
-                    okChatServerListenner.onRead(host,temperatureInt,humidityInt);
+                if (wifiThListenner !=null){
+                    wifiThListenner.onRead(host,temperatureInt,humidityInt);
                 }
             }
 

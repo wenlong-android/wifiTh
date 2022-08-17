@@ -5,23 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ebig.client.OkChatClient;
 
-
-import com.ebig.service.ClientInfo;
-import com.ebig.socket.netty.Gateway;
 import com.ebig.socket.netty.WifiThServer;
-import com.ebig.socket.netty.OkChatServerListenner;
-import com.ebig.socket.utils.OkChatLog;
+import com.ebig.socket.netty.WifiThListenner;
 
-import java.util.List;
-import java.util.Timer;
-
-public class ServerActivity extends AppCompatActivity implements OkChatServerListenner {
+public class ServerActivity extends AppCompatActivity implements WifiThListenner {
     private TextView btn_content;
     private long count = 1;
 
@@ -58,6 +49,16 @@ public class ServerActivity extends AppCompatActivity implements OkChatServerLis
             @Override
             public void run() {
                 Toast.makeText(ServerActivity.this, "客户端：" + host + " 断开连接", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
+    @Override
+    public void onStartResult(boolean success) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
 
             }
         });
